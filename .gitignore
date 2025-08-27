@@ -52,3 +52,6 @@ backend/.env
 .env
 .env.local
 .env.production
+
+#config
+lib\config.dart
