@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../services/transaction_service.dart';
 import '../models/transaction_model.dart';
-import 'package:uuid/uuid.dart';
 import 'home.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -28,7 +27,7 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
   String? _error;
   Transaction? _transacaoRealizada;
   String? _qrData;
-  String? _hash;
+  // String? _hash; // não utilizado após remoção do fluxo de QR
   bool _matriculaTravada = false;
 
   @override
@@ -43,26 +42,14 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
     if (widget.descricaoInicial != null) {
       _descricaoController.text = widget.descricaoInicial!;
     }
-    _hash = widget.hashInicial ?? const Uuid().v4();
+    // _hash = widget.hashInicial ?? const Uuid().v4();
   }
 
-  void _gerarQrCode() {
-    if (!_formKey.currentState!.validate()) return;
-    final data = {
-      'matricula': _matriculaController.text.trim(),
-      'valor': int.parse(_valorController.text.trim()),
-      'descricao': _descricaoController.text.trim(),
-      'hash': _hash ?? const Uuid().v4(),
-    };
-    setState(() {
-      _qrData = _toJsonString(data);
-      _matriculaTravada = true; // Trava o campo de matrícula após gerar o QR Code
-    });
-  }
+  // Removido botão de gerar QR; função não é mais utilizada
 
-  String _toJsonString(Map<String, dynamic> data) {
-    return '{${data.entries.map((e) => '"${e.key}":"${e.value}"').join(',')}}';
-  }
+  // String _toJsonString(Map<String, dynamic> data) {
+  //   return '{${data.entries.map((e) => '"${e.key}":"${e.value}"').join(',')}}';
+  // }
 
   Future<void> _enviar() async {
     if (!_formKey.currentState!.validate()) return;
@@ -241,18 +228,6 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
                         ),
                       Row(
                         children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.qr_code),
-                              label: const Text('Gerar QR'),
-                              onPressed: _gerarQrCode,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
                           Expanded(
                             child: ElevatedButton.icon(
                               icon: _isLoading ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.send),

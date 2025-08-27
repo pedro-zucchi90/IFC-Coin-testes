@@ -13,6 +13,7 @@ import 'historico_transacoes_screen.dart';
 import 'admin_aprovar_transferencias_screen.dart';
 import 'qr_code_receber_screen.dart';
 import 'qr_code_ler_screen.dart';
+import 'transferencia_screen.dart';
 import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
@@ -195,6 +196,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             context,
                             MaterialPageRoute(
                               builder: (context) => QrCodeLerScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.edit, color: Colors.orange),
+                        title: Text('Digitar dados para transferir'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TransferenciaScreen(),
                             ),
                           );
                         },

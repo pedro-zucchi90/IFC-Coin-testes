@@ -54,4 +54,4 @@ backend/.env
 .env.production
 
 #config
-lib\config.dart
+lib/config.dart
