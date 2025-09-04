@@ -345,22 +345,28 @@ router.post('/concluir/:id', verificarToken, upload.single('evidenciaArquivo'), 
             return res.status(200).json({ message: 'Solicitação enviada para análise!', goalRequest });
         }
 
-        meta.usuariosConcluidos.push(req.user._id);
-        await meta.save();
-        await req.user.adicionarCoins(meta.recompensa);
+        // --- ALTERAÇÃO: Buscar o usuário do banco para garantir métodos do Mongoose ---
+        const usuario = await User.findById(req.user._id);
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuário não encontrado' });
+        }
 
-        await req.user.atualizarEstatisticas('meta_concluida');
-        await req.user.atualizarEstatisticas('coins_ganhos', meta.recompensa);
-        await req.user.verificarConquistas();
+        meta.usuariosConcluidos.push(usuario._id);
+        await meta.save();
+        await usuario.adicionarCoins(meta.recompensa);
+
+        await usuario.atualizarEstatisticas('meta_concluida');
+        await usuario.atualizarEstatisticas('coins_ganhos', meta.recompensa);
+        await usuario.verificarConquistas();
 
         const Transaction = require('../models/transactionModel');
         const transacao = new Transaction({
             tipo: 'recebido',
             origem: null,
-            destino: req.user._id,
+            destino: usuario._id,
             quantidade: meta.recompensa,
             descricao: `Recompensa por concluir meta: ${meta.titulo}`,
-            hash: `goal_${meta._id}_${req.user._id}_${Date.now()}`
+            hash: `goal_${meta._id}_${usuario._id}_${Date.now()}`
         });
 
         await transacao.save();

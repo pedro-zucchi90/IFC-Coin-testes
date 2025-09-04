@@ -6,7 +6,7 @@ import 'auth_service.dart';
 import '../config.dart';
 
 class UserService {
-  // baseUrlvem do config.dart
+  // baseUrl vem do config.dart
   final AuthService _authService = AuthService();
 
   // Atualizar perfil do usuário

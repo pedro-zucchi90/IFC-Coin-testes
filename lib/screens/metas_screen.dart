@@ -55,6 +55,30 @@ class _MetasScreenState extends State<MetasScreen> {
     }
   }
 
+  Future<void> _concluirMetaDireta(Goal meta) async {
+    try {
+      await _goalService.concluirMeta(metaId: meta.id!);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Meta "${meta.titulo}" concluída com sucesso! 🎉'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        await _carregarMetas();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao concluir a meta: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _solicitarConclusaoMeta(Goal meta) async {
     final TextEditingController descricaoController = TextEditingController();
     final TextEditingController evidenciaTextoController = TextEditingController();
@@ -429,12 +453,22 @@ class _MetasScreenState extends State<MetasScreen> {
                                         SizedBox(
                                           width: double.infinity,
                                           child: ElevatedButton(
-                                            onPressed: () => _solicitarConclusaoMeta(meta),
+                                            onPressed: () {
+                                              if (meta.requerAprovacao == true) {
+                                                _solicitarConclusaoMeta(meta);
+                                              } else {
+                                                _concluirMetaDireta(meta);
+                                              }
+                                            },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: azulPrincipal,
                                               foregroundColor: Colors.white,
                                             ),
-                                            child: const Text('Solicitar conclusão de meta'),
+                                            child: Text(
+                                              meta.requerAprovacao == true
+                                                  ? 'Solicitar conclusão de meta'
+                                                  : 'Concluir meta',
+                                            ),
                                           ),
                                         ),
                                     ],

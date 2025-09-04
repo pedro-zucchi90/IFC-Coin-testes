@@ -108,8 +108,6 @@ app.use('*', (req, res) => {
 });
 
 // Inicia o servidor na porta 3000 (ou definida no .env)
-app.listen(3000, '0.0.0.0', () => {
-  console.log(`API disponível em: http://${localIP}:3000/api`);
-  console.log(`Painel administrativo: http://${localIP}:3000/admin`);
-  console.log('Protótipo do Painel Administrativo disponível em: http://127.0.0.1:3000/admin');
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`API disponível em: http://${localIP}:${PORT}/api`);
 }); 
